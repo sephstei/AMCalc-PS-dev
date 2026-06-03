@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="AMCalc-PS">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="UTF-8">
-<title>AMCalc-PS V2.6</title>
+<title>AMCalc-PS V2.7</title>
 
 <style>
 body { font-family: Arial; padding: 20px; }
@@ -340,6 +340,7 @@ td.result,
 	<div class="button-row">
 		<button onclick="exportCurrentProject()">📤 Export</button>
 		<button onclick="importSingleProject()">📥 Import</button>
+		<button onclick="exportPDF()">📄 PDF Export</button>
 	</div>
 
 </div>
@@ -393,7 +394,7 @@ td.result,
 </div>
 
 <div class="version-info">
-    V2.6
+    V2.7
 </div>
 
 <div class="spacer"></div>
@@ -570,6 +571,35 @@ function printTable(){
         "Erstellt am: " + new Date().toLocaleString("de-DE");
 
     window.print();
+}
+
+function exportPDF(){
+
+    const { jsPDF } = window.jspdf;
+
+    let table = document.querySelector("table");
+
+    html2canvas(table).then(canvas => {
+
+        let imgData = canvas.toDataURL("image/png");
+
+        let pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
+
+        let pageWidth = pdf.internal.pageSize.getWidth();
+
+        let imgWidth = pageWidth - 20;
+        let imgHeight = canvas.height * imgWidth / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+
+        let name = currentProject ? currentProject : "Aufmass";
+
+        pdf.save(name + ".pdf");
+    });
 }
 
 function getProjects(){
@@ -1122,5 +1152,7 @@ window.onload = () => {
 	</div>
 
 </div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
