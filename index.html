@@ -577,9 +577,40 @@ function exportPDF(){
 
     const { jsPDF } = window.jspdf;
 
-    let table = document.querySelector("table");
+    let table = document.querySelector("table").outerHTML;
 
-    html2canvas(table).then(canvas => {
+    let projectName = currentProject ? currentProject : "Aufmaß";
+
+    let now = new Date();
+    let dateString = now.toLocaleDateString("de-DE");
+    let timeString = now.toLocaleTimeString("de-DE");
+
+    // temporäres Layout erzeugen
+    let container = document.createElement("div");
+
+    container.innerHTML = `
+        <div style="font-family: Arial; width: 800px; padding: 20px;">
+
+            <!-- HEADER -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <img src="icon-192.png" style="height:60px;">
+                <h2>${projectName}</h2>
+            </div>
+
+            <!-- TABLE -->
+            ${table}
+
+            <!-- FOOTER -->
+            <div style="margin-top:20px; font-size:12px; text-align:right;">
+                Erstellt am: ${dateString} ${timeString}
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(container);
+
+    html2canvas(container).then(canvas => {
 
         let imgData = canvas.toDataURL("image/png");
 
@@ -596,9 +627,9 @@ function exportPDF(){
 
         pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
 
-        let name = currentProject ? currentProject : "Aufmass";
+        pdf.save(projectName + ".pdf");
 
-        pdf.save(name + ".pdf");
+        document.body.removeChild(container); // cleanup
     });
 }
 
