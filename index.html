@@ -575,62 +575,7 @@ function printTable(){
 
 function exportPDF(){
 
-    const { jsPDF } = window.jspdf;
-
-    let table = document.querySelector("table").outerHTML;
-
-    let projectName = currentProject ? currentProject : "Aufmaß";
-
-    let now = new Date();
-    let dateString = now.toLocaleDateString("de-DE");
-    let timeString = now.toLocaleTimeString("de-DE");
-
-    // temporäres Layout erzeugen
-    let container = document.createElement("div");
-
-    container.innerHTML = `
-        <div style="font-family: Arial; width: 800px; padding: 20px;">
-
-            <!-- HEADER -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <img src="icon-192.png" style="height:60px;">
-                <h2>${projectName}</h2>
-            </div>
-
-            <!-- TABLE -->
-            ${table}
-
-            <!-- FOOTER -->
-            <div style="margin-top:20px; font-size:12px; text-align:right;">
-                Erstellt am: ${dateString} ${timeString}
-            </div>
-
-        </div>
-    `;
-
-    document.body.appendChild(container);
-
-    html2canvas(container).then(canvas => {
-
-        let imgData = canvas.toDataURL("image/png");
-
-        let pdf = new jsPDF({
-            orientation: "portrait",
-            unit: "mm",
-            format: "a4"
-        });
-
-        let pageWidth = pdf.internal.pageSize.getWidth();
-
-        let imgWidth = pageWidth - 20;
-        let imgHeight = canvas.height * imgWidth / canvas.width;
-
-        pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
-
-        pdf.save(projectName + ".pdf");
-
-        document.body.removeChild(container); // cleanup
-    });
+   window.print();
 }
 
 function getProjects(){
@@ -1183,7 +1128,5 @@ window.onload = () => {
 	</div>
 
 </div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
