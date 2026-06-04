@@ -1188,7 +1188,7 @@ function calculate(){
 
   try{
    o.textContent=v?
-    Number(eval(v)).toLocaleString("de-DE",{minimumFractionDigits:2})
+    Number(eval(v)).toLocaleString("de-DE",{ minimumFractionDigits: 3, maximumFractionDigits: 3 })
     :"";
   }catch{
    o.textContent="Fehler";
