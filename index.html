@@ -1046,11 +1046,11 @@ function collectTableData(){
  return d;
 }
 
-function addRow(text="", formula="", unit="m²"){
+function addRow(text="", formula="", unit="m"){
 
  let tr = document.createElement("tr");
 
- let standardUnits = ["m²","m","m³","Stk","pau","g","kg"];
+ let standardUnits = ["m","m²","m³","Stk","pau","g","kg"];
  let unitCell;
 
  // Einheit vorbereiten (WICHTIG: vor innerHTML!)
@@ -1059,8 +1059,8 @@ function addRow(text="", formula="", unit="m²"){
   unitCell = `
   <td class="unit-cell" data-unit="${unit}">
     <select onchange="handleUnitChange(this)">
-      <option ${unit==="m²"?"selected":""}>m²</option>
-      <option ${unit==="m"?"selected":""}>m</option>
+      <option ${unit==="m²"?"selected":""}>m</option>
+      <option ${unit==="m"?"selected":""}>m²</option>
       <option ${unit==="m³"?"selected":""}>m³</option>
       <option ${unit==="Stk"?"selected":""}>Stk</option>
       <option ${unit==="pau"?"selected":""}>pau</option>
