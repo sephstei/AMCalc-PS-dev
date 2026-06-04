@@ -735,30 +735,43 @@ function exportHW(){
 
     let rows = document.querySelectorAll("#tableBody tr");
 
-    // Header exakt wie Zielsystem
-    let csv = "ZA;PosNr;ArtNr;Bezeichnung;Menge;Einheit;Epreis;Gpreis\n";
+    let csv = "";
 
-    let pos = 1;
+    // 1. Header
+    csv += "ZA;PosNr;ArtNr;Bezeichnung;Menge;Einheit;Epreis;Gpreis\n";
 
+    // 2. Leerzeile
+    csv += ";;;;;;;;\n";
+
+    // 3. Vier Zeilen mit K
+    for(let i = 0; i < 4; i++){
+        csv += "K;;;;;;;\n";
+    }
+
+    // 4. Datenzeilen aus AM-Calc
     rows.forEach(row => {
 
         let cells = row.querySelectorAll("td");
 
         let bezeichnung = cells[1].querySelector("input")?.value || "";
+
         let menge = cells[3].innerText || "";
+        
+        // Punkt statt Komma
+        menge = menge.replace(",", ".");
 
         let unitCell = cells[4];
-
         let einheit = unitCell.getAttribute("data-unit") || "";
 
-        // optional: Komma formatieren
-        menge = menge.replace(".", ",");
+        // nur Zeilen mit Inhalt exportieren (optional aber sinnvoll)
+        if(bezeichnung.trim() === "" && menge.trim() === ""){
+            return;
+        }
 
-        csv += `;${pos};;${bezeichnung};${menge};${einheit};;\n`;
-
-        pos++;
+        csv += `N;;;${bezeichnung};${menge};${einheit};;\n`;
     });
 
+    // Datei erzeugen
     let blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
     let link = document.createElement("a");
