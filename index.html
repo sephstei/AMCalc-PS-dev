@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="AMCalc-PS">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="UTF-8">
-<title>AMCalc-PS V2.7</title>
+<title>AMCalc-PS V2.7.1</title>
 
 <style>
 body { font-family: Arial; padding: 20px; }
@@ -394,7 +394,7 @@ td.result,
 </div>
 
 <div class="version-info">
-    V2.7
+    V2.7.1
 </div>
 
 <div class="spacer"></div>
@@ -957,8 +957,11 @@ function addRow(text="",formula="",unit="m²"){
   <select>
    <option ${unit==="m²"?"selected":""}>m²</option>
    <option ${unit==="m"?"selected":""}>m</option>
+   <option ${unit==="m³"?"selected":""}>m</option>
    <option ${unit==="Stk"?"selected":""}>Stk</option>
    <option ${unit==="pau"?"selected":""}>pau</option>
+   <option ${unit==="g"?"selected":""}>pau</option>
+   <option ${unit==="kg"?"selected":""}>pau</option>
   </select>
  </td>`;
 
