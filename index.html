@@ -429,6 +429,7 @@ td.result,
 
 <div class="button-row">
 <button onclick="addRow()">Neue Zeile</button>
+<button onclick="insertRow()">Zeile einfügen</button>
 <button onclick="deleteSelectedRow()">Zeile entfernen</button>
 <button onclick="exportCSV()">Export CSV</button>
 <button onclick="importCSV()">Import CSV</button>
@@ -1107,6 +1108,33 @@ function addRow(text="", formula="", unit="m"){
  tbody.appendChild(tr);
 
  recalcRowNumbers();
+}
+
+function insertRow(){
+
+    if(!selectedRow){
+        alert("Bitte zuerst eine Zeile auswählen.");
+        return;
+    }
+
+    // neue leere Zeile erzeugen (nutzt deine bestehende Logik)
+    let newRow = document.createElement("tr");
+
+    addRow("", "", "m");
+
+    // Die letzte Zeile holen (die gerade erzeugt wurde)
+    let tbody = document.getElementById("tableBody");
+    let createdRow = tbody.lastElementChild;
+
+    // an richtige Position verschieben
+    tbody.insertBefore(createdRow, selectedRow);
+
+    // Auswahl auf neue Zeile setzen
+    selectedRow.classList.remove("selected");
+    createdRow.classList.add("selected");
+    selectedRow = createdRow;
+
+    recalcRowNumbers();
 }
 
 function handleUnitChange(select){
