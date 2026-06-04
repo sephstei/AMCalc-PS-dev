@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="AMCalc-PS">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="UTF-8">
-<title>AMCalc-PS V2.7.1</title>
+<title>AMCalc-PS V2.7.2</title>
 
 <style>
 body { font-family: Arial; padding: 20px; }
@@ -265,6 +265,53 @@ td.result,
 
     body * { visibility: hidden; }
 
+	
+	.result {
+        background: none;
+    }	
+	input, select {
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }	
+	/* Inputs komplett ausblenden */
+	td input {
+        display: none;
+    }
+	
+	table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th {
+        border-bottom: 2px solid #000;
+        font-weight: bold;
+        text-align: left;
+        padding: 6px 4px;
+		font-size: 12pt;
+    }
+
+    td {
+        order-bottom: 0.5px solid #ccc;
+        padding: 6px 4px;
+		background: none !important;
+    }
+	
+	/* Inhalt der Inputs anzeigen */
+	td:nth-child(2)::before,
+	td:nth-child(3)::before {
+		content: attr(data-value);
+    }
+	
+    td:nth-child(1) {
+        text-align: center;
+    }
+
+    td:nth-child(4),
+    td:nth-child(5) {
+        text-align: right;
+    }
 	/* Dropdown Einheit ausblenden */
 	td select {
 		display: none;
@@ -293,19 +340,15 @@ td.result,
         top: 0;
         width: 100%;
     }
-
     .print-header {
         display: flex;
     }
-
     /* FIX: Seitenzählung startet bei 1 */
     body {
         counter-reset: page 1;
+		font-size: 11pt;
     }
-
-    /* Footer maximal unten */
-    
-
+    /* Footer maximal unten */    
 	.print-footer {
 		position: static;
 		margin-top: 10mm;   /* Abstand zur Tabelle */
@@ -314,8 +357,6 @@ td.result,
 		justify-content: space-between;
 		color: #666;
 	}
-
-
     .footer-left {
         text-align: left;
     }
@@ -323,31 +364,23 @@ td.result,
     .footer-right {
         text-align: right;
     }
-
     /* Seitenzahl */
-    
 	.pageNumber:after {
         content: "Seite " counter(page);
     }
-
-
     h1 {
-        font-size: 20px;
+        font-size: 18px;
         margin-bottom: 10px;
-    }
-	
-	
+    }	
 	.print-only {
         display: inline;
     }
-
 }
 
 /* Seitenränder definieren */
 @page {
     margin: 20mm 15mm 25mm 15mm;
 }
-``
 </style>
 </head>
 
@@ -443,7 +476,7 @@ td.result,
 </div>
 
 <div class="version-info">
-    V2.7.1
+    V2.7.2
 </div>
 
 <div class="spacer"></div>
@@ -1083,11 +1116,15 @@ function addRow(text="", formula="", unit="m"){
  // Zeile bauen
  tr.innerHTML = `
  <td></td>
- <td><input value="${text}"></td>
- <td><input value="${formula}"></td>
- <td class="result"></td>
- ${unitCell}
- `;
+ <td class="desc" data-value="${text}">
+  <input value="${text}">
+ </td>
+ <td class="formula" data-value="${formula}">
+   <input value="${formula}">
+ </td>
+  <td class="result"></td>
+  ${unitCell}
+  `;
 
  // Bestehende Features UNVERÄNDERT
  tr.onclick = () => {
@@ -1096,7 +1133,19 @@ function addRow(text="", formula="", unit="m"){
   tr.classList.add("selected");
  };
 
- tr.querySelectorAll("input,select").forEach(e => e.addEventListener("input", calculate));
+ tr.querySelectorAll("input").forEach(e => e.addEventListener("input", calculate));
+ tr.querySelectorAll("select").forEach(e => e.addEventListener("change", calculate));
+ tr.querySelectorAll("td.desc input").forEach(input => {
+ input.addEventListener("input", function(){
+        this.parentElement.setAttribute("data-value", this.value);
+    });
+ });
+
+ tr.querySelectorAll("td.formula input").forEach(input => {
+ input.addEventListener("input", function(){
+        this.parentElement.setAttribute("data-value", this.value);
+    });
+ });
 
  let tbody = document.getElementById("tableBody");
 
