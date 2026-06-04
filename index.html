@@ -388,6 +388,7 @@ td.result,
 		<button onclick="exportCurrentProject()">📤 Export</button>
 		<button onclick="importSingleProject()">📥 Import</button>
 		<button onclick="exportPDF()">📄 PDF Export</button>
+		<button onclick="exportHW()">🔧 HW Export</button>
 	</div>
 
 </div>
@@ -728,6 +729,45 @@ function importCSV(){
     };
 
     input.click();
+}
+
+function exportHW(){
+
+    let rows = document.querySelectorAll("#tableBody tr");
+
+    // Header exakt wie Zielsystem
+    let csv = "ZA;PosNr;ArtNr;Bezeichnung;Menge;Einheit;Epreis;Gpreis\n";
+
+    let pos = 1;
+
+    rows.forEach(row => {
+
+        let cells = row.querySelectorAll("td");
+
+        let bezeichnung = cells[1].querySelector("input")?.value || "";
+        let menge = cells[3].innerText || "";
+
+        let unitCell = cells[4];
+
+        let einheit = unitCell.getAttribute("data-unit") || "";
+
+        // optional: Komma formatieren
+        menge = menge.replace(".", ",");
+
+        csv += `;${pos};;${bezeichnung};${menge};${einheit};;\n`;
+
+        pos++;
+    });
+
+    let blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+
+    let name = currentProject ? currentProject : "HW_Export";
+
+    link.download = name + ".csv";
+    link.click();
 }
 
 function saveProjects(p){
