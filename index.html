@@ -95,7 +95,29 @@ button {
 table {
     border-collapse: collapse;
     width: 100%;
+	table-layout: fixed;
 }
+
+th:nth-child(1), td:nth-child(1) {
+    width: 40px;
+}
+
+th:nth-child(2), td:nth-child(2) {
+    width: 40%;
+}
+
+th:nth-child(3), td:nth-child(3) {
+    width: 40%;
+}
+
+th:nth-child(4), td:nth-child(4) {
+    width: 90px;
+}
+
+th:nth-child(5), td:nth-child(5) {
+    width: 80px;   /* Einheit bewusst klein */
+}
+
 
 td, th {
     border: 1px solid #ccc;
@@ -107,6 +129,11 @@ td select {
     width: 100%;
     box-sizing: border-box;
     height: 28px;
+}
+
+td.unit-cell input,
+td.unit-cell select {
+    max-width: 100%;
 }
 
 .result {
