@@ -960,46 +960,94 @@ function collectTableData(){
  return d;
 }
 
-function addRow(text="",formula="",unit="m²"){
- let tr=document.createElement("tr");
- 
- tr.innerHTML=`
+function addRow(text="", formula="", unit="m²"){
+
+ let tr = document.createElement("tr");
+
+ let standardUnits = ["m²","m","m³","Stk","pau","g","kg"];
+ let unitCell;
+
+ // Einheit vorbereiten (WICHTIG: vor innerHTML!)
+ if(standardUnits.includes(unit)){
+
+  unitCell = `
+  <td class="unit-cell" data-unit="${unit}">
+    <select onchange="handleUnitChange(this)">
+      <option ${unit==="m²"?"selected":""}>m²</option>
+      <option ${unit==="m"?"selected":""}>m</option>
+      <option ${unit==="m³"?"selected":""}>m³</option>
+      <option ${unit==="Stk"?"selected":""}>Stk</option>
+      <option ${unit==="pau"?"selected":""}>pau</option>
+      <option ${unit==="g"?"selected":""}>g</option>
+      <option ${unit==="kg"?"selected":""}>kg</option>
+      <option value="custom">Eigene Einheit...</option>
+    </select>
+  </td>`;
+
+ } else {
+
+  unitCell = `
+  <td class="unit-cell" data-unit="${unit}">
+    <input type="text" value="${unit}" 
+      oninput="this.parentElement.setAttribute('data-unit', this.value)">
+  </td>`;
+ }
+
+ // Zeile bauen
+ tr.innerHTML = `
  <td></td>
  <td><input value="${text}"></td>
  <td><input value="${formula}"></td>
  <td class="result"></td>
- <td class="unit-cell" data-unit="${unit}">
-  <select onchange="updateUnit(this)">
-   <option ${unit==="m²"?"selected":""}>m²</option>
-   <option ${unit==="m"?"selected":""}>m</option>
-   <option ${unit==="m³"?"selected":""}>m³</option>
-   <option ${unit==="Stk"?"selected":""}>Stk</option>
-   <option ${unit==="pau"?"selected":""}>pau</option>
-   <option ${unit==="g"?"selected":""}>g</option>
-   <option ${unit==="kg"?"selected":""}>kg</option>
-  </select>
- </td>`;
+ ${unitCell}
+ `;
 
- tr.onclick=()=>{
-  selectedRow=tr;
-  document.querySelectorAll("tbody tr").forEach(r=>r.classList.remove("selected"));
+ // Bestehende Features UNVERÄNDERT
+ tr.onclick = () => {
+  selectedRow = tr;
+  document.querySelectorAll("tbody tr").forEach(r => r.classList.remove("selected"));
   tr.classList.add("selected");
  };
 
- tr.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",calculate));
+ tr.querySelectorAll("input,select").forEach(e => e.addEventListener("input", calculate));
 
  let tbody = document.getElementById("tableBody");
 
  if(!tbody){
-    console.error("tbody nicht gefunden!");
-    return;
+  console.error("tbody nicht gefunden!");
+  return;
  }
 
-tbody.appendChild(tr);
+ tbody.appendChild(tr);
 
  recalcRowNumbers();
 }
 
+function handleUnitChange(select){
+
+ let td = select.parentElement;
+
+ if(select.value === "custom"){
+
+  let input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "Einheit";
+
+  input.oninput = function(){
+   td.setAttribute("data-unit", input.value);
+  };
+
+  td.innerHTML = "";
+  td.appendChild(input);
+
+  input.focus();
+
+ } else {
+
+  td.setAttribute("data-unit", select.value);
+ }
+}
+	
 function deleteSelectedRow(){
  if(!selectedRow)return alert("Auswählen");
 
@@ -1018,6 +1066,34 @@ function updateUnit(select){
 	let td = select.parentElement;
     td.setAttribute("data-unit", select.value);
 }
+
+function handleUnitChange(select){
+
+    let td = select.parentElement;
+
+    if(select.value === "custom"){
+
+        let input = document.createElement("input");
+
+        input.type = "text";
+        input.placeholder = "Einheit";
+
+        input.oninput = function(){
+            td.setAttribute("data-unit", input.value);
+        };
+
+        // Select ersetzen
+        td.innerHTML = "";
+        td.appendChild(input);
+
+        input.focus();
+
+    } else {
+
+        td.setAttribute("data-unit", select.value);
+    }
+}
+
 
 function calculate(){
  document.querySelectorAll("#table tbody tr").forEach(r=>{
