@@ -238,6 +238,21 @@ td.result,
 
     body * { visibility: hidden; }
 
+	/* Dropdown Einheit ausblenden */
+	td select {
+		display: none;
+	}
+
+	/* Einheit als Text anzeigen */
+	td.unit-cell::after {
+        content: attr(data-unit);
+        display: inline;
+    }
+	
+	td.unit-cell {
+        text-align: center;
+    }
+
     #print-area, #print-area * { visibility: visible; }
 
     #print-area {
@@ -953,8 +968,8 @@ function addRow(text="",formula="",unit="m²"){
  <td><input value="${text}"></td>
  <td><input value="${formula}"></td>
  <td class="result"></td>
- <td>
-  <select>
+ <td class="unit-cell" data-unit="${unit}">
+  <select onchange="updateUnit(this)">
    <option ${unit==="m²"?"selected":""}>m²</option>
    <option ${unit==="m"?"selected":""}>m</option>
    <option ${unit==="m³"?"selected":""}>m³</option>
@@ -997,6 +1012,11 @@ function recalcRowNumbers(){
  document.querySelectorAll("#table tbody tr").forEach((r,i)=>{
   r.children[0].textContent=i+1;
  });
+}
+
+function updateUnit(select){
+	let td = select.parentElement;
+    td.setAttribute("data-unit", select.value);
 }
 
 function calculate(){
