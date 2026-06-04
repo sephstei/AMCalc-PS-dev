@@ -772,7 +772,8 @@ function exportHW(){
     });
 
     // Datei erzeugen
-    let blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+	let bom = "\uFEFF";
+	let blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8;" });
 
     let link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
